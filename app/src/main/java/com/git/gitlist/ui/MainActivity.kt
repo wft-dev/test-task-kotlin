@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRecei
         }
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             // filteration the array list
-            if(s!!.length === 0){
+            if(s.toString().trim()!!.length === 0){
                 isLoading = false
                 updateFilterList(gitUserList)
             }else{
@@ -144,6 +144,7 @@ class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRecei
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (!isLoading) {
+                    Log.e("TARUN Scroll",gitUserList.size.toString())
                     if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == gitUserList.size - 1) {
                         loadData()
                         isLoading = true
@@ -170,7 +171,12 @@ class MainActivity : AppCompatActivity(), ConnectivityReceiver.ConnectivityRecei
         if (isInitLoad) {
             call = apiService.getGitList(0)
         }else{
-            call = gitUserList.get(gitUserList.size - 1).id?.let { apiService.getGitList(it) }!!
+            if(gitUserList.size === 0){
+                call = apiService.getGitList(0)
+            }else{
+                call = gitUserList.get(gitUserList.size - 1).id?.let { apiService.getGitList(it) }!!
+            }
+
         }
 
         // request send to api for data
